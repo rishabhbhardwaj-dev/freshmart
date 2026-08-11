@@ -1,0 +1,242 @@
+[
+  {
+    "id": 1,
+    "name": "Royal Gala Apple",
+    "price": 3.49,
+    "category": "Fruits",
+    "image": "🍎",
+    "unit": "per kg",
+    "inStock": true,
+    "description": "Crisp and sweet Royal Gala apples, perfect for snacking or baking."
+  },
+  {
+    "id": 2,
+    "name": "Organic Bananas",
+    "price": 1.99,
+    "category": "Fruits",
+    "image": "🍌",
+    "unit": "per bunch",
+    "inStock": true,
+    "description": "Organic bananas sourced from sustainable farms. Rich in potassium."
+  },
+  {
+    "id": 3,
+    "name": "Fresh Strawberries",
+    "price": 4.99,
+    "category": "Fruits",
+    "image": "🍓",
+    "unit": "per pack",
+    "inStock": true,
+    "description": "Juicy, hand-picked strawberries. Perfect for desserts and smoothies."
+  },
+  {
+    "id": 4,
+    "name": "Organic Broccoli",
+    "price": 2.79,
+    "category": "Vegetables",
+    "image": "🥦",
+    "unit": "per head",
+    "inStock": true,
+    "description": "Fresh organic broccoli florets, packed with vitamins and minerals."
+  },
+  {
+    "id": 5,
+    "name": "Baby Spinach",
+    "price": 3.29,
+    "category": "Vegetables",
+    "image": "🥬",
+    "unit": "200g bag",
+    "inStock": true,
+    "description": "Tender baby spinach leaves, pre-washed and ready for salads."
+  },
+  {
+    "id": 6,
+    "name": "Sweet Bell Peppers",
+    "price": 4.49,
+    "category": "Vegetables",
+    "image": "🫑",
+    "unit": "3 pack",
+    "inStock": true,
+    "description": "Tri-color bell pepper pack — red, yellow, and green. Crunchy and sweet."
+  },
+  {
+    "id": 7,
+    "name": "Whole Milk",
+    "price": 4.29,
+    "category": "Dairy",
+    "image": "🥛",
+    "unit": "1 liter",
+    "inStock": true,
+    "description": "Farm-fresh whole milk, pasteurized and creamy. Great for the whole family."
+  },
+  {
+    "id": 8,
+    "name": "Greek Yogurt",
+    "price": 5.49,
+    "category": "Dairy",
+    "image": "🫙",
+    "unit": "500g tub",
+    "inStock": true,
+    "description": "Thick, creamy Greek yogurt. High in protein, low in sugar."
+  },
+  {
+    "id": 9,
+    "name": "Aged Cheddar Cheese",
+    "price": 6.99,
+    "category": "Dairy",
+    "image": "🧀",
+    "unit": "250g block",
+    "inStock": true,
+    "description": "Sharp and crumbly aged cheddar, matured for 12 months."
+  },
+  {
+    "id": 10,
+    "name": "Sourdough Loaf",
+    "price": 5.99,
+    "category": "Bakery",
+    "image": "🍞",
+    "unit": "1 loaf",
+    "inStock": true,
+    "description": "Artisan sourdough bread with a crispy crust and tangy flavor."
+  },
+  {
+    "id": 11,
+    "name": "Butter Croissants",
+    "price": 4.49,
+    "category": "Bakery",
+    "image": "🥐",
+    "unit": "4 pack",
+    "inStock": true,
+    "description": "Flaky, golden butter croissants. Freshly baked every morning."
+  },
+  {
+    "id": 12,
+    "name": "Cinnamon Rolls",
+    "price": 6.49,
+    "category": "Bakery",
+    "image": "🧁",
+    "unit": "6 pack",
+    "inStock": true,
+    "description": "Warm cinnamon rolls with cream cheese frosting. Irresistible!"
+  },
+  {
+    "id": 13,
+    "name": "Fresh Orange Juice",
+    "price": 5.99,
+    "category": "Beverages",
+    "image": "🍊",
+    "unit": "1 liter",
+    "inStock": true,
+    "description": "100% freshly squeezed orange juice. No added sugar or preservatives."
+  },
+  {
+    "id": 14,
+    "name": "Green Tea Collection",
+    "price": 7.49,
+    "category": "Beverages",
+    "image": "🍵",
+    "unit": "20 bags",
+    "inStock": true,
+    "description": "Premium Japanese green tea bags. Antioxidant-rich and calming."
+  },
+  {
+    "id": 15,
+    "name": "Sparkling Water",
+    "price": 3.99,
+    "category": "Beverages",
+    "image": "💧",
+    "unit": "6 pack",
+    "inStock": true,
+    "description": "Natural sparkling mineral water. Zero calories, pure refreshment."
+  },
+  {
+    "id": 16,
+    "name": "Mixed Nuts Trail Mix",
+    "price": 8.99,
+    "category": "Snacks",
+    "image": "🥜",
+    "unit": "400g bag",
+    "inStock": true,
+    "description": "Premium trail mix with almonds, cashews, walnuts, and dried cranberries."
+  },
+  {
+    "id": 17,
+    "name": "Dark Chocolate Bar",
+    "price": 4.99,
+    "category": "Snacks",
+    "image": "🍫",
+    "unit": "100g bar",
+    "inStock": true,
+    "description": "72% dark chocolate, single-origin cacao. Rich and velvety smooth."
+  },
+  {
+    "id": 18,
+    "name": "Rice Crackers",
+    "price": 3.79,
+    "category": "Snacks",
+    "image": "🍘",
+    "unit": "200g pack",
+    "inStock": true,
+    "description": "Crunchy rice crackers with soy sauce glaze. Light and addictive."
+  },
+  {
+    "id": 19,
+    "name": "Coca-Cola Classic",
+    "price": 1.99,
+    "category": "Soft Drinks",
+    "image": "🥤",
+    "unit": "330ml can",
+    "inStock": true,
+    "description": "The iconic Coca-Cola Classic. Refreshingly crisp with the perfect balance of sweetness."
+  },
+  {
+    "id": 20,
+    "name": "Sprite Lemon-Lime",
+    "price": 1.89,
+    "category": "Soft Drinks",
+    "image": "🍋",
+    "unit": "330ml can",
+    "inStock": true,
+    "description": "Crisp, clean, and refreshing lemon-lime soda. Zero caffeine, pure citrus taste."
+  },
+  {
+    "id": 21,
+    "name": "Fanta Orange",
+    "price": 1.89,
+    "category": "Soft Drinks",
+    "image": "🍹",
+    "unit": "330ml can",
+    "inStock": true,
+    "description": "Bursting with bold orange flavor. Fun, fizzy, and fruity refreshment."
+  },
+  {
+    "id": 22,
+    "name": "Pepsi Cola",
+    "price": 1.99,
+    "category": "Soft Drinks",
+    "image": "🫗",
+    "unit": "500ml bottle",
+    "inStock": true,
+    "description": "Bold cola taste with a smooth finish. The choice of a new generation."
+  },
+  {
+    "id": 23,
+    "name": "Mountain Dew",
+    "price": 2.29,
+    "category": "Soft Drinks",
+    "image": "⚡",
+    "unit": "500ml bottle",
+    "inStock": true,
+    "description": "Citrus-charged energy in every sip. Bold flavor for bold moments."
+  },
+  {
+    "id": 24,
+    "name": "Ginger Ale",
+    "price": 2.49,
+    "category": "Soft Drinks",
+    "image": "🫚",
+    "unit": "6 pack",
+    "inStock": true,
+    "description": "Premium dry ginger ale with real ginger extract. Perfect as a mixer or on its own."
+  }
+]

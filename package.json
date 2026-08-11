@@ -1,0 +1,25 @@
+{
+  "name": "freshmart-grocery-app",
+  "version": "1.0.0",
+  "description": "FreshMart — Premium online grocery store built with Node.js, Express, and vanilla JS",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node server/index.js"
+  },
+  "keywords": [
+    "grocery",
+    "ecommerce",
+    "express",
+    "nodejs"
+  ],
+  "author": "FreshMart Team",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^7.9.1",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "prisma": "^7.9.1"
+  }
+}
