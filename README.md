@@ -1,75 +1,98 @@
 # 🥬 FreshMart — Premium Grocery Store
 
-A full-stack grocery selling application where users can browse grocery items, add them to a cart, and place orders.
+> A full-stack grocery shopping experience built with **Node.js, Express, and Vanilla JavaScript**, featuring product browsing, search, categories, cart management, checkout, authentication, and a polished premium UI.
 
-## Features
+<p align="center">
+  <strong>🛒 Browse → 🔎 Search → 🛍️ Add to Cart → 👤 Authenticate → 📦 Place an Order</strong>
+</p>
 
-- **Product Catalog** — 18+ grocery items across 6 categories (Fruits, Vegetables, Dairy, Bakery, Beverages, Snacks)
-- **Category Filtering** — Filter products by category with animated tab navigation
-- **Search** — Real-time search with debounced input
-- **Shopping Cart** — Slide-out cart with quantity controls, item removal, and live totals
-- **Checkout** — Order form with customer details and order summary
-- **Order Confirmation** — Success view with order ID and details
-- **Premium Dark UI** — Glassmorphism design with micro-animations and vibrant gradients
+---
 
-## Tech Stack
+## ✨ Overview
 
-| Layer    | Technology               |
-|----------|--------------------------|
-| Backend  | Node.js + Express        |
-| Frontend | Vanilla HTML / CSS / JS  |
-| Data     | In-memory JSON store     |
-| Design   | Dark-mode glassmorphism  |
+FreshMart is a full-stack grocery store application designed to demonstrate how a modern e-commerce flow can be built with a lightweight JavaScript stack.
 
-## Quick Start
+The application is served by a single **Node.js + Express** server. Express serves the static frontend from `public/` and exposes REST APIs under `/api/*`.
+
+The current application logic uses an **in-memory store** backed by seed product data in `server/data/products.json`. Prisma + MySQL/MariaDB have also been initialized as the project's database layer and are being prepared for the next persistence phase.
+
+> **Important:** You do **not** need XAMPP or MySQL just to run the current FreshMart UI/API locally. XAMPP is relevant to the ongoing Prisma/MySQL database setup.
+
+---
+
+## 🚀 What You Can Do
+
+### 🛍️ Shopping
+
+- Browse grocery products
+- Filter products by category
+- Search products
+- View product information
+- Add products to the cart
+- Increase/decrease quantities
+- Remove individual items
+- Clear the cart
+- View live cart totals
+
+### 👤 Authentication
+
+- Register an account
+- Log in
+- Check the currently authenticated user
+- Forgot-password / mock OTP flow
+- Reset-password flow
+
+### 📦 Orders
+
+- Checkout with customer information
+- Place an order
+- Receive an order confirmation
+- View orders
+- Retrieve an individual order by ID
+
+### 🎨 UI / UX
+
+- Premium dark interface
+- Glassmorphism styling
+- Responsive layout
+- Animated interactions
+- Grocery-focused visual design
+- Search and cart interactions
+- Authentication modal
+
+---
+
+## 🧰 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Runtime | Node.js |
+| Backend | Express 5 |
+| Frontend | HTML5 + CSS3 + Vanilla JavaScript |
+| API | REST-style Express routes |
+| Current data layer | In-memory JavaScript store |
+| Seed data | JSON |
+| Database layer being prepared | Prisma + MySQL/MariaDB |
+| Local DB environment | XAMPP / MariaDB |
+| Package manager | npm |
+
+The server entry point is `server/index.js`, and the current package scripts use `node server/index.js` for both `start` and `dev`.
+
+---
+
+## ⚡ Run FreshMart Locally
+
+### 1. Prerequisites
+
+Install:
+
+- [Node.js](https://nodejs.org/)
+- npm (included with Node.js)
+
+For the **current application**, no separate database installation is required.
+
+### 2. Clone the repository
 
 ```bash
-# Install dependencies
-npm install
-
-# Start the server
-npm start
-```
-
-Then open **http://localhost:3000** in your browser.
-
-## API Endpoints
-
-| Method | Endpoint             | Description                  |
-|--------|----------------------|------------------------------|
-| GET    | /api/products        | List products (?category=)   |
-| GET    | /api/products/:id    | Get single product           |
-| GET    | /api/products/categories | List categories           |
-| GET    | /api/cart            | Get cart contents            |
-| POST   | /api/cart            | Add item to cart             |
-| PUT    | /api/cart/:productId | Update item quantity         |
-| DELETE | /api/cart/:productId | Remove item from cart        |
-| DELETE | /api/cart            | Clear entire cart            |
-| POST   | /api/orders          | Place order                  |
-| GET    | /api/orders          | List all orders              |
-| GET    | /api/orders/:id      | Get single order             |
-
-## Project Structure
-
-```
-grocery-app/
-├── server/
-│   ├── index.js              # Express server
-│   ├── routes/
-│   │   ├── products.js       # Product API routes
-│   │   ├── cart.js            # Cart API routes
-│   │   └── orders.js         # Order API routes
-│   ├── data/
-│   │   └── products.json     # Seed product data
-│   └── models/
-│       └── store.js          # In-memory data store
-├── public/
-│   ├── index.html            # Main page
-│   ├── css/styles.css        # Design system
-│   └── js/
-│       ├── api.js            # API client
-│       ├── components.js     # UI component renderers
-│       └── app.js            # Main app controller
-├── package.json
-└── README.md
-```
+git clone https://github.com/rishabhbhardwaj-dev/freshmart.git
+cd freshmart
