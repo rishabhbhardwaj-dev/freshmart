@@ -4,49 +4,111 @@
 
 const express = require('express');
 const router = express.Router();
-const store = require('../models/store');
+const prisma = require('../db');
 
-// GET /api/products?category=Fruits
-router.get('/', (req, res) => {
+// GET /api/products?category=Fruits&search=apple
+router.get('/', async (req, res) => {
   try {
     const { category, search } = req.query;
-    let products = store.getAllProducts(category || null);
+
+    const where = {};
+
+    if (category) {
+      where.category = {
+        equals: category,
+      };
+    }
 
     if (search) {
       const q = search.toLowerCase();
-      products = products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q)
-      );
+
+      where.OR = [
+        {
+          name: {
+            contains: q,
+          },
+        },
+        {
+          description: {
+            contains: q,
+          },
+        },
+      ];
     }
 
-    res.json({ success: true, data: products });
+    const products = await prisma.product.findMany({
+      where,
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    res.json({
+      success: true,
+      data: products,
+    });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('GET /api/products error:', err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
   }
 });
 
 // GET /api/products/categories
-router.get('/categories', (req, res) => {
+router.get('/categories', async (req, res) => {
   try {
-    const categories = store.getCategories();
-    res.json({ success: true, data: categories });
+    const products = await prisma.product.findMany({
+      select: {
+        category: true,
+      },
+    });
+
+    const categories = [...new Set(products.map((p) => p.category))];
+
+    res.json({
+      success: true,
+      data: categories,
+    });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('GET /api/products/categories error:', err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
   }
 });
 
 // GET /api/products/:id
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const product = store.getProductById(req.params.id);
+    const product = await prisma.product.findUnique({
+      where: {
+        id: parseInt(req.params.id),
+      },
+    });
+
     if (!product) {
-      return res.status(404).json({ success: false, error: 'Product not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Product not found',
+      });
     }
-    res.json({ success: true, data: product });
+
+    res.json({
+      success: true,
+      data: product,
+    });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('GET /api/products/:id error:', err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    });
   }
 });
 
