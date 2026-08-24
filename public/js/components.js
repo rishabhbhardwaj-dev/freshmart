@@ -32,8 +32,8 @@ const Components = {
           <p class="product-card-desc">${product.description}</p>
           <div class="product-card-footer">
             <div class="product-price">
-              <span class="product-price-value">$${product.price.toFixed(2)}</span>
-              <span class="product-price-unit">${product.unit}</span>
+              <span class="product-price-value">$${Number(product.price).toFixed(2)}</span>
+              <span class="product-price-unit">{product.unit}</span>
             </div>
             ${inCart
               ? `<div class="in-cart-controls">
@@ -61,8 +61,8 @@ const Components = {
   categoryTab(category, isActive = false) {
     const icon = this.categoryIcons[category] || '📦';
     return `
-      <button class="category-tab ${isActive ? 'active' : ''}" 
-              data-category="${category}" 
+      <button class="category-tab ${isActive ? 'active' : ''}"
+              data-category="${category}"
               id="tab-${category.toLowerCase()}"
               onclick="app.filterByCategory('${category}')">
         <span class="tab-icon">${icon}</span> ${category}
@@ -74,12 +74,17 @@ const Components = {
    * Render cart item HTML
    */
   cartItem(item) {
+    const price = item.price !== undefined ? Number(item.price) : Number(item.product?.price || 0);
+    const name = item.name || item.product?.name || 'Unknown';
+    const image = item.image || item.product?.image || '📦';
+    const unit = item.unit || item.product?.unit || '';
+
     return `
       <div class="cart-item" id="cart-item-${item.productId}">
-        <div class="cart-item-emoji">${item.image}</div>
+        <div class="cart-item-emoji">${image}</div>
         <div class="cart-item-info">
-          <div class="cart-item-name">${item.name}</div>
-          <div class="cart-item-unit">${item.unit}</div>
+          <div class="cart-item-name">${name}</div>
+          <div class="cart-item-unit">${unit}</div>
           <div class="cart-item-controls">
             <button class="qty-btn" onclick="app.updateQuantity(${item.productId}, ${item.quantity - 1})">−</button>
             <span class="qty-value">${item.quantity}</span>
@@ -87,7 +92,7 @@ const Components = {
           </div>
         </div>
         <div class="cart-item-price">
-          <span class="cart-item-total">$${(item.price * item.quantity).toFixed(2)}</span>
+          <span class="cart-item-total">$$$${(price * item.quantity).toFixed(2)}</span>
           <button class="cart-item-remove" onclick="app.removeFromCart(${item.productId})">Remove</button>
         </div>
       </div>
@@ -110,13 +115,21 @@ const Components = {
   /**
    * Render checkout form
    */
-  checkoutForm(cart) {
-    const itemsHtml = cart.items.map(item => `
-      <div class="order-summary-item">
-        <span>${item.image} ${item.name} × ${item.quantity}</span>
-        <span>$${(item.price * item.quantity).toFixed(2)}</span>
-      </div>
-    `).join('');
+  checkoutForm(cart, user = null) {
+    const itemsHtml = cart.items.map(item => {
+      const price = item.price !== undefined ? Number(item.price) : Number(item.product?.price || 0);
+      const name = item.name || item.product?.name || 'Unknown';
+      const image = item.image || item.product?.image || '📦';
+      return `
+        <div class="order-summary-item">
+          <span>${image} ${name} × ${item.quantity}</span>
+          <span>$${(price * item.quantity).toFixed(2)}</span>
+        </div>
+      `;
+    }).join('');
+
+    const nameValue = user ? user.name : '';
+    const emailValue = user ? user.email : '';
 
     return `
       <h2 class="checkout-title">Checkout</h2>
@@ -124,24 +137,24 @@ const Components = {
 
       <div class="order-summary">
         <div class="order-summary-title">Order Summary</div>
-        ${itemsHtml}
+        {itemsHtml}
         <div class="order-summary-total">
           <span>Total</span>
-          <span>$${cart.totalPrice.toFixed(2)}</span>
+          <span>$$$${Number(cart.totalPrice).toFixed(2)}</span>
         </div>
       </div>
 
       <form id="checkout-form" onsubmit="app.placeOrder(event)">
         <div class="form-group">
           <label class="form-label" for="customer-name">Full Name</label>
-          <input class="form-input" type="text" id="customer-name" placeholder="John Doe" required>
+          <input class="form-input" type="text" id="customer-name" placeholder="John Doe" value="${nameValue}" required>
         </div>
         <div class="form-group">
           <label class="form-label" for="customer-email">Email Address</label>
-          <input class="form-input" type="email" id="customer-email" placeholder="john@example.com" required>
+          <input class="form-input" type="email" id="customer-email" placeholder="john@example.com" value="${emailValue}" required>
         </div>
         <button class="place-order-btn" type="submit" id="place-order-btn">
-          Place Order — $${cart.totalPrice.toFixed(2)}
+          Place Order — $${Number(cart.totalPrice).toFixed(2)}
         </button>
       </form>
     `;
@@ -155,7 +168,7 @@ const Components = {
       <div class="order-success">
         <div class="order-success-icon">✅</div>
         <h2 class="order-success-title">Order Confirmed!</h2>
-        <p class="order-success-id">Order #${order.id}</p>
+        <p class="order-success-id">Order #{order.id}</p>
 
         <div class="order-success-details">
           <div class="order-detail-row">
@@ -176,7 +189,7 @@ const Components = {
           </div>
           <div class="order-detail-row" style="font-weight: 700; padding-top: 8px; border-top: 1px solid var(--border-subtle); margin-top: 8px;">
             <span>Total</span>
-            <span style="color: var(--accent-green);">$${order.total.toFixed(2)}</span>
+            <span style="color: var(--accent-green);">$$$${Number(order.total).toFixed(2)}</span>
           </div>
         </div>
 
@@ -244,7 +257,7 @@ const Components = {
             <label class="auth-label" for="reg-password">Password</label>
             <input type="password" id="reg-password" class="auth-input" placeholder="••••••••" required>
           </div>
-          <button type="submit" class="auth-btn">Sign Up</button>
+          <button type="submit" class="auth-btn">Create Account</button>
         </form>
         <div class="auth-footer">
           Already have an account? <span class="auth-link" onclick="app.setAuthView('login')">Sign In</span>
@@ -257,46 +270,35 @@ const Components = {
     return `
       <div class="auth-view" id="view-forgot">
         <h2 class="auth-title">Reset Password</h2>
-        <p style="text-align:center; color:var(--text-secondary); margin-bottom:20px; font-size:0.9rem;">
-          Enter your email and we'll send you an OTP to reset your password.
-        </p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">Enter your email to receive a reset code.</p>
         <form class="auth-form" onsubmit="app.handleForgotPassword(event)">
           <div class="auth-input-group">
             <label class="auth-label" for="forgot-email">Email Address</label>
             <input type="email" id="forgot-email" class="auth-input" placeholder="you@example.com" required>
           </div>
-          <button type="submit" class="auth-btn">Send OTP</button>
+          <button type="submit" class="auth-btn">Send Reset Code</button>
         </form>
         <div class="auth-footer">
-          <span class="auth-link" onclick="app.setAuthView('login')">Back to Login</span>
+          Remember your password? <span class="auth-link" onclick="app.setAuthView('login')">Sign In</span>
         </div>
       </div>
     `;
   },
 
-  authReset(email) {
+  authReset(email, otp) {
     return `
       <div class="auth-view" id="view-reset">
-        <h2 class="auth-title">Enter OTP</h2>
-        <p style="text-align:center; color:var(--text-secondary); margin-bottom:10px; font-size:0.9rem;">
-          Enter the OTP shown in your notification.
-        </p>
+        <h2 class="auth-title">New Password</h2>
         <form class="auth-form" onsubmit="app.handleResetPassword(event)">
           <input type="hidden" id="reset-email" value="${email}">
-          <div class="auth-input-group">
-            <label class="auth-label" for="reset-otp">6-Digit OTP</label>
-            <input type="text" id="reset-otp" class="auth-input" placeholder="123456" required>
-          </div>
+          <input type="hidden" id="reset-otp" value="${otp}">
           <div class="auth-input-group">
             <label class="auth-label" for="reset-password">New Password</label>
             <input type="password" id="reset-password" class="auth-input" placeholder="••••••••" required>
           </div>
-          <button type="submit" class="auth-btn">Update Password</button>
+          <button type="submit" class="auth-btn">Reset Password</button>
         </form>
-        <div class="auth-footer">
-          <span class="auth-link" onclick="app.setAuthView('login')">Back to Login</span>
-        </div>
       </div>
     `;
-  }
+  },
 };

@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
 
     res.json({
       success: true,
-      data: products,
+      data: products.map(p => ({ ...p, price: Number(p.price) })),
     });
   } catch (err) {
     console.error('GET /api/products error:', err);
@@ -100,7 +100,7 @@ router.get('/:id', async (req, res) => {
 
     res.json({
       success: true,
-      data: product,
+      data: { ...product, price: Number(product.price) },
     });
   } catch (err) {
     console.error('GET /api/products/:id error:', err);

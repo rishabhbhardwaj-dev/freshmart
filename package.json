@@ -23,5 +23,8 @@
     "express": "^5.1.0",
     "mariadb": "^3.5.3",
     "prisma": "^7.9.1"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

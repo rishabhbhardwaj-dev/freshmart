@@ -70,7 +70,6 @@ const app = {
   filterByCategory(category) {
     this.activeCategory = category;
 
-    // Update active tab visually
     document.querySelectorAll('.category-tab').forEach((tab) => {
       tab.classList.toggle('active', tab.dataset.category === category);
     });
@@ -83,7 +82,6 @@ const app = {
     const container = document.getElementById('category-tabs');
     if (!container) return;
 
-    // Keep the "All" tab, add category tabs
     const allTab = `
       <button class="category-tab active" data-category="all" id="tab-all" onclick="app.filterByCategory('all')">
         <span class="tab-icon">🛒</span> All
@@ -130,7 +128,6 @@ const app = {
       this.renderProducts();
       this.showToast('Added to cart', '🛒');
 
-      // Animate cart button
       const badge = document.getElementById('cart-badge');
       if (badge) {
         badge.style.animation = 'cartPop 0.4s ease';
@@ -169,14 +166,12 @@ const app = {
 
   // ── Cart UI ──────────────────────────────────────────
   updateCartUI() {
-    // Badge
     const badge = document.getElementById('cart-badge');
     if (badge) {
       badge.textContent = this.cart.totalItems;
       badge.classList.toggle('visible', this.cart.totalItems > 0);
     }
 
-    // Cart items
     const cartItemsEl = document.getElementById('cart-items');
     if (cartItemsEl) {
       if (this.cart.items.length === 0) {
@@ -188,13 +183,11 @@ const app = {
       }
     }
 
-    // Total
     const totalEl = document.getElementById('cart-total-price');
     if (totalEl) {
-      totalEl.textContent = `$${this.cart.totalPrice.toFixed(2)}`;
+      totalEl.textContent = `$${Number(this.cart.totalPrice).toFixed(2)}`;
     }
 
-    // Checkout button state
     const checkoutBtn = document.getElementById('checkout-btn');
     if (checkoutBtn) {
       checkoutBtn.disabled = this.cart.items.length === 0;
@@ -213,13 +206,12 @@ const app = {
   async showCheckout() {
     if (this.cart.items.length === 0) return;
 
-    // Close cart sidebar
     if (this.cartOpen) this.toggleCart();
 
     const modal = document.getElementById('checkout-modal');
     const body = document.getElementById('checkout-modal-body');
     if (modal && body) {
-      body.innerHTML = Components.checkoutForm(this.cart);
+      body.innerHTML = Components.checkoutForm(this.cart, this.currentUser);
       modal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
     }
@@ -253,23 +245,21 @@ const app = {
     try {
       const order = await API.placeOrder(name, email);
 
-      // Update cart state
       this.cart = { items: [], totalItems: 0, totalPrice: 0 };
       this.updateCartUI();
       this.renderProducts();
 
-      // Show confirmation
       const body = document.getElementById('checkout-modal-body');
       if (body) {
         body.innerHTML = Components.orderConfirmation(order);
       }
 
-      this.showToast(`Order #${order.id} placed successfully!`, '🎉');
+      this.showToast(`Order #{order.id} placed successfully!`, '🎉');
     } catch (err) {
       this.showToast(err.message, '❌');
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = `Place Order — $${this.cart.totalPrice.toFixed(2)}`;
+        submitBtn.textContent = `Place Order — $$$${Number(this.cart.totalPrice).toFixed(2)}`;
       }
     }
   },
@@ -281,8 +271,10 @@ const app = {
       try {
         const user = await API.getCurrentUser();
         this.setUser(user);
+        this.cart = await API.getCart();
+        this.updateCartUI();
+        this.renderProducts();
       } catch (err) {
-        // Token invalid or expired
         localStorage.removeItem('freshmart_token');
         this.setUser(null);
       }
@@ -309,11 +301,13 @@ const app = {
   logout() {
     localStorage.removeItem('freshmart_token');
     this.setUser(null);
+    this.cart = { items: [], totalItems: 0, totalPrice: 0 };
+    this.updateCartUI();
+    this.renderProducts();
     this.showToast('Logged out successfully', '👋');
   },
 
   showAuthModal() {
-    this.authOpen = true;
     const modal = document.getElementById('auth-modal');
     if (modal) {
       modal.style.display = 'flex';
@@ -323,7 +317,6 @@ const app = {
   },
 
   closeAuthModal() {
-    this.authOpen = false;
     const modal = document.getElementById('auth-modal');
     if (modal) {
       modal.style.display = 'none';
@@ -331,26 +324,38 @@ const app = {
     }
   },
 
-  setAuthView(view, extraData = null) {
+  setAuthView(view) {
     const body = document.getElementById('auth-modal-body');
     if (!body) return;
 
-    if (view === 'login') body.innerHTML = Components.authLogin();
-    else if (view === 'register') body.innerHTML = Components.authRegister();
-    else if (view === 'forgot') body.innerHTML = Components.authForgot();
-    else if (view === 'reset') body.innerHTML = Components.authReset(extraData);
+    switch (view) {
+      case 'login':
+        body.innerHTML = Components.authLogin();
+        break;
+      case 'register':
+        body.innerHTML = Components.authRegister();
+        break;
+      case 'forgot':
+        body.innerHTML = Components.authForgot();
+        break;
+    }
   },
 
   async handleLogin(event) {
     event.preventDefault();
     const email = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value.trim();
+    const password = document.getElementById('login-password').value;
+
     try {
-      const data = await API.login(email, password);
-      localStorage.setItem('freshmart_token', data.token);
-      this.setUser(data.user);
+      const { token, user } = await API.login(email, password);
+      localStorage.setItem('freshmart_token', token);
+      this.setUser(user);
       this.closeAuthModal();
-      this.showToast('Welcome back!', '🎉');
+      this.showToast(`Welcome back, ${user.name.split(' ')[0]}!`, '👋');
+
+      this.cart = await API.getCart();
+      this.updateCartUI();
+      this.renderProducts();
     } catch (err) {
       this.showToast(err.message, '❌');
     }
@@ -360,13 +365,18 @@ const app = {
     event.preventDefault();
     const name = document.getElementById('reg-name').value.trim();
     const email = document.getElementById('reg-email').value.trim();
-    const password = document.getElementById('reg-password').value.trim();
+    const password = document.getElementById('reg-password').value;
+
     try {
-      const data = await API.register(name, email, password);
-      localStorage.setItem('freshmart_token', data.token);
-      this.setUser(data.user);
+      const { token, user } = await API.register(name, email, password);
+      localStorage.setItem('freshmart_token', token);
+      this.setUser(user);
       this.closeAuthModal();
-      this.showToast('Account created successfully!', '🎉');
+      this.showToast(`Welcome, ${user.name.split(' ')[0]}!`, '🎉');
+
+      this.cart = await API.getCart();
+      this.updateCartUI();
+      this.renderProducts();
     } catch (err) {
       this.showToast(err.message, '❌');
     }
@@ -375,38 +385,29 @@ const app = {
   async handleForgotPassword(event) {
     event.preventDefault();
     const email = document.getElementById('forgot-email').value.trim();
+
     try {
-      const res = await API.forgotPassword(email);
-      this.showToast('OTP generated successfully!', '✉️');
-      
-      this.setAuthView('reset', email);
+      const data = await API.forgotPassword(email);
+      this.showToast('Reset code sent!', '📧');
 
-      // MOCK BEHAVIOR: Show alert prominently to ensure user sees it, and auto-fill it
-      setTimeout(() => {
-        alert(`MOCK EMAIL RECEIVED:\n\nYour Reset OTP is: ${res.mockOTP}`);
-        const otpInput = document.getElementById('reset-otp');
-        if (otpInput) {
-          otpInput.value = res.mockOTP;
-        }
-      }, 500);
-
+      const body = document.getElementById('auth-modal-body');
+      if (body) {
+        body.innerHTML = Components.authReset(email, data.mockOTP);
+      }
     } catch (err) {
       this.showToast(err.message, '❌');
-      // If user tries to reset a non-existent account, they might not realize the mock DB resets.
-      if (err.message.includes('User not found')) {
-        alert("Wait! The application uses a mock in-memory database that resets when the server restarts. Please make sure you have explicitly registered an account first before trying to reset its password.");
-      }
     }
   },
 
   async handleResetPassword(event) {
     event.preventDefault();
     const email = document.getElementById('reset-email').value;
-    const otp = document.getElementById('reset-otp').value.trim();
-    const newPassword = document.getElementById('reset-password').value.trim();
+    const otp = document.getElementById('reset-otp').value;
+    const newPassword = document.getElementById('reset-password').value;
+
     try {
       await API.resetPassword(email, otp, newPassword);
-      this.showToast('Password updated successfully! Please login.', '✅');
+      this.showToast('Password reset! Please log in.', '✅');
       this.setAuthView('login');
     } catch (err) {
       this.showToast(err.message, '❌');
@@ -418,26 +419,21 @@ const app = {
     const container = document.getElementById('toast-container');
     if (!container) return;
 
-    const toastEl = document.createElement('div');
-    toastEl.innerHTML = Components.toast(message, icon);
-    container.appendChild(toastEl.firstElementChild);
+    const toast = document.createElement('div');
+    toast.innerHTML = Components.toast(message, icon);
+    const toastEl = toast.firstElementChild;
+    container.appendChild(toastEl);
 
-    // Auto-remove after animation
+    requestAnimationFrame(() => {
+      toastEl.classList.add('show');
+    });
+
     setTimeout(() => {
-      const toast = container.firstElementChild;
-      if (toast) toast.remove();
+      toastEl.classList.remove('show');
+      setTimeout(() => toastEl.remove(), 300);
     }, 3000);
-  },
-
-  // ── Navigation (SPA-like) ───────────────────────────
-  navigate(page) {
-    if (page === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
   },
 };
 
-// ── Boot ─────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  app.init();
-});
+// Start the app
+document.addEventListener('DOMContentLoaded', () => app.init());
