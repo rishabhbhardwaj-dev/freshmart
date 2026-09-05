@@ -309,15 +309,18 @@ const app = {
     this.currentUser = user;
     const loginBtn = document.getElementById('login-button');
     const nameDisplay = document.getElementById('user-name-display');
+    const ordersBtn = document.getElementById('orders-button');
     if (loginBtn && nameDisplay) {
       if (user) {
         nameDisplay.textContent = user.name.split(' ')[0];
         loginBtn.classList.add('logged-in');
         loginBtn.onclick = () => this.logout();
+        if (ordersBtn) ordersBtn.style.display = 'inline-flex';
       } else {
         nameDisplay.textContent = 'Login';
         loginBtn.classList.remove('logged-in');
         loginBtn.onclick = () => this.showAuthModal();
+        if (ordersBtn) ordersBtn.style.display = 'none';
       }
     }
   },

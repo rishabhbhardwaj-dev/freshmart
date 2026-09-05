@@ -355,7 +355,7 @@ const Components = {
       <div class="order-history-page">
         <div class="order-history-title">My Orders</div>
         <div class="order-history-list">
-          {ordersHtml}
+          ${ordersHtml}
         </div>
       </div>
     `;

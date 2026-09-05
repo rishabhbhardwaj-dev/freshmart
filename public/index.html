@@ -36,17 +36,20 @@
         <span class="cart-badge" id="cart-badge">0</span>
       </button>
 
-      <div class="user-menu" id="user-menu">
-        <button class="user-button" id="login-button" onclick="app.showAuthModal()">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span id="user-name-display" class="user-name-display">Login</span>
-        </button>
-      </div>
-    </div>
+<div class="user-menu" id="user-menu" style="display: flex; align-items: center; gap: 10px;">
+  <button class="user-button" id="orders-button" onclick="app.showOrderHistory()" style="display:none; background: none; border: 1px solid var(--border-subtle, #333); border-radius: 8px; padding: 6px 12px; color: var(--text-primary, #fff); cursor: pointer; font-size: 0.85rem; white-space: nowrap;">
+    📦 Orders
+  </button>
+  <button class="user-button" id="login-button" onclick="app.showAuthModal()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+      <circle cx="12" cy="7" r="4"></circle>
+    </svg>
+    <span id="user-name-display" class="user-name-display">Login</span>
+  </button>
+</div>
   </header>
+
 
   <!-- ── Main Content ─────────────────────────────────── -->
   <main class="main-content" id="main-content">
