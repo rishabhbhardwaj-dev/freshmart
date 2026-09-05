@@ -259,7 +259,7 @@ const app = {
       this.showToast(err.message, '❌');
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = `Place Order — $$$${Number(this.cart.totalPrice).toFixed(2)}`;
+        submitBtn.textContent = `Place Order — $${Number(this.cart.totalPrice).toFixed(2)}`;
       }
     }
   },
