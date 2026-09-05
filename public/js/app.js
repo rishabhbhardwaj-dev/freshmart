@@ -119,7 +119,31 @@ const app = {
       })
       .join('');
   },
+// ── Navigation ───────────────────────────────────────
+  async showOrderHistory() {
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
 
+    try {
+      const orders = await API.getOrders();
+      mainContent.innerHTML = `
+        <div class="order-history-wrapper" style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
+          <button onclick="app.navigate('home')" style="background: none; border: none; color: var(--accent-green, #22c55e); font-size: 0.95rem; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; gap: 6px;">
+            ← Back to Shop
+          </button>
+          ${Components.orderHistory(orders)}
+        </div>
+      `;
+    } catch (err) {
+      this.showToast(err.message, '❌');
+    }
+  },
+
+  navigate(view) {
+    if (view === 'home') {
+      location.reload();
+    }
+  },
   // ── Cart Operations ──────────────────────────────────
   async addToCart(productId) {
     try {
