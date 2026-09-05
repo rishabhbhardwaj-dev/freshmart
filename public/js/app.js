@@ -254,7 +254,7 @@ const app = {
         body.innerHTML = Components.orderConfirmation(order);
       }
 
-      this.showToast(`Order #{order.id} placed successfully!`, '🎉');
+      this.showToast(`Order #${order.id} placed successfully!`, '🎉');
     } catch (err) {
       this.showToast(err.message, '❌');
       if (submitBtn) {
