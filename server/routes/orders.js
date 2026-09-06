@@ -27,6 +27,12 @@ function formatOrder(order) {
       ? order.items.map((item) => ({
           ...item,
           price: Number(item.price),
+          product: item.product
+            ? {
+                ...item.product,
+                price: Number(item.product.price),
+              }
+            : null,
         }))
       : undefined,
   };
@@ -85,7 +91,7 @@ router.post('/', async (req, res) => {
           },
         },
         include: {
-          items: true,
+          items: { include: { product: true } },
         },
       });
 
@@ -117,12 +123,12 @@ router.get('/', async (req, res) => {
     if (user) {
       orders = await prisma.order.findMany({
         where: { customerEmail: user.email },
-        include: { items: true },
+        include: { items: { include: { product: true } } },
         orderBy: { createdAt: 'desc' },
       });
     } else {
       orders = await prisma.order.findMany({
-        include: { items: true },
+        include: { items: { include: { product: true } } },
         orderBy: { createdAt: 'desc' },
       });
     }
@@ -142,7 +148,7 @@ router.get('/:id', async (req, res) => {
   try {
     const order = await prisma.order.findUnique({
       where: { id: parseInt(req.params.id) },
-      include: { items: true },
+      include: { items: { include: { product: true } } },
     });
 
     if (!order) {

@@ -32,8 +32,8 @@ const Components = {
           <p class="product-card-desc">${product.description}</p>
           <div class="product-card-footer">
             <div class="product-price">
-              <span class="product-price-value">$$$${Number(product.price).toFixed(2)}</span>
-              <span class="product-price-unit">${product.unit}</span>
+              <span class="product-price-value">$${Number(product.price).toFixed(2)}</span>
+              <span class="product-price-unit">{product.unit}</span>
             </div>
             ${inCart
               ? `<div class="in-cart-controls">
@@ -92,8 +92,8 @@ const Components = {
           </div>
         </div>
         <div class="cart-item-price">
-          <span class="cart-item-total">$${(price * item.quantity).toFixed(2)}</span>
-          <button class="cart-item-remove" onclick="app.removeFromCart({item.productId})">Remove</button>
+          <span class="cart-item-total">$$$${(price * item.quantity).toFixed(2)}</span>
+          <button class="cart-item-remove" onclick="app.removeFromCart(${item.productId})">Remove</button>
         </div>
       </div>
     `;
@@ -123,7 +123,7 @@ const Components = {
       return `
         <div class="order-summary-item">
           <span>${image} ${name} × ${item.quantity}</span>
-          <span>$$$${(price * item.quantity).toFixed(2)}</span>
+          <span>$${(price * item.quantity).toFixed(2)}</span>
         </div>
       `;
     }).join('');
@@ -137,24 +137,24 @@ const Components = {
 
       <div class="order-summary">
         <div class="order-summary-title">Order Summary</div>
-        ${itemsHtml}
+        {itemsHtml}
         <div class="order-summary-total">
           <span>Total</span>
-          <span>$${Number(cart.totalPrice).toFixed(2)}</span>
+          <span>$$$${Number(cart.totalPrice).toFixed(2)}</span>
         </div>
       </div>
 
       <form id="checkout-form" onsubmit="app.placeOrder(event)">
         <div class="form-group">
           <label class="form-label" for="customer-name">Full Name</label>
-          <input class="form-input" type="text" id="customer-name" placeholder="John Doe" value="{nameValue}" required>
+          <input class="form-input" type="text" id="customer-name" placeholder="John Doe" value="${nameValue}" required>
         </div>
         <div class="form-group">
           <label class="form-label" for="customer-email">Email Address</label>
           <input class="form-input" type="email" id="customer-email" placeholder="john@example.com" value="${emailValue}" required>
         </div>
         <button class="place-order-btn" type="submit" id="place-order-btn">
-          Place Order — $$$${Number(cart.totalPrice).toFixed(2)}
+          Place Order — $${Number(cart.totalPrice).toFixed(2)}
         </button>
       </form>
     `;
@@ -168,7 +168,7 @@ const Components = {
       <div class="order-success">
         <div class="order-success-icon">✅</div>
         <h2 class="order-success-title">Order Confirmed!</h2>
-        <p class="order-success-id">Order #${order.id}</p>
+        <p class="order-success-id">Order #{order.id}</p>
 
         <div class="order-success-details">
           <div class="order-detail-row">
@@ -189,7 +189,7 @@ const Components = {
           </div>
           <div class="order-detail-row" style="font-weight: 700; padding-top: 8px; border-top: 1px solid var(--border-subtle); margin-top: 8px;">
             <span>Total</span>
-            <span style="color: var(--accent-green);">$${Number(order.total).toFixed(2)}</span>
+            <span style="color: var(--accent-green);">$$$${Number(order.total).toFixed(2)}</span>
           </div>
         </div>
 
@@ -226,7 +226,7 @@ const Components = {
           </div>
           <div class="auth-input-group">
             <label class="auth-label" for="login-password">Password</label>
-            <input type="password" id="login-password" class="auth-input" placeholder="••••••••" required>
+            <input type="password" id="login-password" class="auth-input" placeholder="••••••••" autocomplete="current-password" required>
           </div>
           <div style="text-align:right;">
             <span class="auth-link" style="font-size:0.8rem;" onclick="app.setAuthView('forgot')">Forgot Password?</span>
@@ -306,58 +306,18 @@ const Components = {
    * Render order history page
    */
   orderHistory(orders) {
-    if (orders.length === 0) {
-      return `
-        <div class="order-history-empty">
-          <div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">📦</div>
-          <p style="color: var(--text-secondary); font-size: 1.1rem;">No orders yet</p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Start shopping to place your first order</p>
-        </div>
-      `;
+    if (!orders || orders.length === 0) {
+      return '<div class="order-history-empty"><div style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;">📦</div><p style="color: var(--text-secondary); font-size: 1.1rem;">No orders yet</p><p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Start shopping to place your first order</p></div>';
     }
-
-    const ordersHtml = orders.map(order => {
-      const itemsHtml = order.items.map(item => `
-        <div class="order-history-item">
-          <span>${item.quantity}× product #${item.productId}</span>
-          <span>$$$${Number(item.price).toFixed(2)}</span>
-        </div>
-      `).join('');
-
-      const date = new Date(order.createdAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      return `
-        <div class="order-history-card">
-          <div class="order-history-header">
-            <div>
-              <span class="order-history-id">Order #${order.id}</span>
-              <span class="order-history-date">${date}</span>
-            </div>
-            <span class="order-history-status">${order.status}</span>
-          </div>
-          <div class="order-history-items">
-            ${itemsHtml}
-          </div>
-          <div class="order-history-footer">
-            <span class="order-history-total">Total: $${Number(order.total).toFixed(2)}</span>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    return `
-      <div class="order-history-page">
-        <div class="order-history-title">My Orders</div>
-        <div class="order-history-list">
-          ${ordersHtml}
-        </div>
-      </div>
-    `;
+    const ordersHtml = orders.map(function(order) {
+      const itemsHtml = order.items.map(function(item) {
+        const name = item.product ? item.product.name : "Product #" + item.productId;
+        const image = item.product ? item.product.image : "📦";
+        return '<div class="order-history-item"><span class="order-history-item-left"><span class="order-history-item-emoji">' + image + '</span>' + item.quantity + ' × ' + name + '</span><span class="order-history-item-price">$' + Number(item.price).toFixed(2) + '</span></div>';
+      }).join("");
+      const date = new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+      return '<div class="order-history-card"><div class="order-history-header"><div><span class="order-history-id">Order #' + order.id + '</span><span class="order-history-date">' + date + '</span></div><span class="order-history-status">' + order.status + '</span></div><div class="order-history-items">' + itemsHtml + '</div><div class="order-history-footer"><span class="order-history-total">Total: $' + Number(order.total).toFixed(2) + '</span></div></div>';
+    }).join("");
+    return '<div class="order-history-page"><div class="order-history-title">My Orders</div><div class="order-history-list">' + ordersHtml + '</div></div>';
   },
 };
